@@ -44,13 +44,21 @@ services:
       - influxdb
     volumes:
       # Mount for telegraf config
-      - ./telegraf/mytelegraf.conf:./telegraf/telegraf.conf:ro
+      - ./telegraf/mytelegraf.conf:/etc/telegraf/telegraf.conf:ro
     env_file:
       - influxv2.env
+    links:
+      - influxdb
+    ports:
+    - "8125:8125"
 
   grafana:
     container_name: grafana
     image: grafana/grafana-oss
+    env_file:
+      - grafana.env
+    depends_on:
+      - influxdb
     ports: 
       - 3000:3000
     restart: unless-stopped
